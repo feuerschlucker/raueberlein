@@ -23,6 +23,9 @@ public class KnapsackProblem
 			return null;
 		}
 		
+		
+		
+		
 		public String getName()
 		{
 			return this.name;
