@@ -34,6 +34,7 @@ public class KnapsackProblem
 			return this.weight;
 		}
 		
+		
 		public double getProfit()
 		{
 			return this.profit;
