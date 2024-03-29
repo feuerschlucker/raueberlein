@@ -19,6 +19,10 @@ public class KnapsackProblem
 			this.profit = profit;
 		}
 		
+		public String useless() {
+			return null;
+		}
+		
 		public String getName()
 		{
 			return this.name;
