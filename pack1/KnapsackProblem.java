@@ -18,10 +18,7 @@ public class KnapsackProblem
 			this.weight = weight;
 			this.profit = profit;
 		}
-		
-		public String useless() {
-			return null;
-		}
+	
 		
 		
 		public String getName()
@@ -65,19 +62,19 @@ public class KnapsackProblem
 //		new Item("wine", 7, 90)
 //	};
 	
-//	private static final Item[] ITEMS = 
-//	{
-//		new Item("0", 1, 100),
-//		new Item("1", 2, 90),
-//		new Item("2", 3, 80),
-//		new Item("3", 4, 70),
-//		new Item("4", 5, 60),
-//		new Item("5", 6, 50),
-//		new Item("6", 7, 40),
-//		new Item("7", 8, 30),
-//		new Item("8", 9, 20),
-//		new Item("9", 10, 10)
-//	};
+	private static final Item[] ITEMS = 
+	{
+		new Item("0", 1, 100),
+		new Item("1", 2, 90),
+		new Item("2", 3, 80),
+		new Item("3", 4, 70),
+		new Item("4", 5, 60),
+		new Item("5", 6, 50),
+		new Item("6", 7, 40),
+		new Item("7", 8, 30),
+		new Item("8", 9, 20),
+		new Item("9", 10, 10)
+	};
 
 //	private static final Item[] ITEMS = 
 //	{
@@ -217,118 +214,118 @@ public class KnapsackProblem
 //		new Item("29", 93, 19)
 //	};
 	
-	private static final Item[] ITEMS = 
-	{
-		new Item("0", 99, 12),
-		new Item("1", 20, 19),
-		new Item("2", 48, 15),
-		new Item("3", 43, 6),
-		new Item("4", 100, 8),
-		new Item("5", 67, 11),
-		new Item("6", 76, 20),
-		new Item("7", 86, 17),
-		new Item("8", 20, 11),
-		new Item("9", 57, 1),
-		new Item("10", 80, 6),
-		new Item("11", 37, 18),
-		new Item("12", 69, 14),
-		new Item("13", 89, 17),
-		new Item("14", 19, 19),
-		new Item("15", 57, 5),
-		new Item("16", 13, 14),
-		new Item("17", 96, 4),
-		new Item("18", 35, 6),
-		new Item("19", 98, 3),
-		new Item("20", 31, 8),
-		new Item("21", 90, 13),
-		new Item("22", 30, 4),
-		new Item("23", 80, 7),
-		new Item("24", 15, 6),
-		new Item("25", 38, 5),
-		new Item("26", 63, 4),
-		new Item("27", 55, 16),
-		new Item("28", 68, 7),
-		new Item("29", 62, 8),
-		new Item("30", 80, 12),
-		new Item("31", 6, 17),
-		new Item("32", 50, 18),
-		new Item("33", 49, 1),
-		new Item("34", 10, 1),
-		new Item("35", 39, 9),
-		new Item("36", 24, 7),
-		new Item("37", 62, 18),
-		new Item("38", 45, 1),
-		new Item("39", 96, 18),
-		new Item("40", 73, 18),
-		new Item("41", 54, 18),
-		new Item("42", 14, 1),
-		new Item("43", 44, 15),
-		new Item("44", 82, 12),
-		new Item("45", 27, 9),
-		new Item("46", 36, 6),
-		new Item("47", 76, 13),
-		new Item("48", 9, 14),
-		new Item("49", 50, 12),
-		new Item("50", 90, 17),
-		new Item("51", 64, 3),
-		new Item("52", 70, 10),
-		new Item("53", 33, 13),
-		new Item("54", 89, 20),
-		new Item("55", 73, 8),
-		new Item("56", 75, 10),
-		new Item("57", 42, 6),
-		new Item("58", 92, 5),
-		new Item("59", 97, 6),
-		new Item("60", 48, 2),
-		new Item("61", 45, 16),
-		new Item("62", 27, 12),
-		new Item("63", 58, 9),
-		new Item("64", 7, 19),
-		new Item("65", 4, 8),
-		new Item("66", 16, 20),
-		new Item("67", 53, 19),
-		new Item("68", 79, 4),
-		new Item("69", 36, 2),
-		new Item("70", 54, 1),
-		new Item("71", 41, 5),
-		new Item("72", 99, 8),
-		new Item("73", 79, 17),
-		new Item("74", 25, 20),
-		new Item("75", 5, 6),
-		new Item("76", 97, 4),
-		new Item("77", 22, 18),
-		new Item("78", 47, 1),
-		new Item("79", 83, 4),
-		new Item("80", 15, 16),
-		new Item("81", 40, 3),
-		new Item("82", 76, 8),
-		new Item("83", 4, 18),
-		new Item("84", 77, 9),
-		new Item("85", 44, 17),
-		new Item("86", 92, 19),
-		new Item("87", 88, 19),
-		new Item("88", 1, 1),
-		new Item("89", 8, 12),
-		new Item("90", 9, 9),
-		new Item("91", 19, 19),
-		new Item("92", 1, 13),
-		new Item("93", 1, 13),
-		new Item("94", 53, 8),
-		new Item("95", 88, 20),
-		new Item("96", 13, 17),
-		new Item("97", 69, 2),
-		new Item("98", 51, 8),
-		new Item("99", 76, 9)
-	};
+//	private static final Item[] ITEMS = 
+//	{
+//		new Item("0", 99, 12),
+//		new Item("1", 20, 19),
+//		new Item("2", 48, 15),
+//		new Item("3", 43, 6),
+//		new Item("4", 100, 8),
+//		new Item("5", 67, 11),
+//		new Item("6", 76, 20),
+//		new Item("7", 86, 17),
+//		new Item("8", 20, 11),
+//		new Item("9", 57, 1),
+//		new Item("10", 80, 6),
+//		new Item("11", 37, 18),
+//		new Item("12", 69, 14),
+//		new Item("13", 89, 17),
+//		new Item("14", 19, 19),
+//		new Item("15", 57, 5),
+//		new Item("16", 13, 14),
+//		new Item("17", 96, 4),
+//		new Item("18", 35, 6),
+//		new Item("19", 98, 3),
+//		new Item("20", 31, 8),
+//		new Item("21", 90, 13),
+//		new Item("22", 30, 4),
+//		new Item("23", 80, 7),
+//		new Item("24", 15, 6),
+//		new Item("25", 38, 5),
+//		new Item("26", 63, 4),
+//		new Item("27", 55, 16),
+//		new Item("28", 68, 7),
+//		new Item("29", 62, 8),
+//		new Item("30", 80, 12),
+//		new Item("31", 6, 17),
+//		new Item("32", 50, 18),
+//		new Item("33", 49, 1),
+//		new Item("34", 10, 1),
+//		new Item("35", 39, 9),
+//		new Item("36", 24, 7),
+//		new Item("37", 62, 18),
+//		new Item("38", 45, 1),
+//		new Item("39", 96, 18),
+//		new Item("40", 73, 18),
+//		new Item("41", 54, 18),
+//		new Item("42", 14, 1),
+//		new Item("43", 44, 15),
+//		new Item("44", 82, 12),
+//		new Item("45", 27, 9),
+//		new Item("46", 36, 6),
+//		new Item("47", 76, 13),
+//		new Item("48", 9, 14),
+//		new Item("49", 50, 12),
+//		new Item("50", 90, 17),
+//		new Item("51", 64, 3),
+//		new Item("52", 70, 10),
+//		new Item("53", 33, 13),
+//		new Item("54", 89, 20),
+//		new Item("55", 73, 8),
+//		new Item("56", 75, 10),
+//		new Item("57", 42, 6),
+//		new Item("58", 92, 5),
+//		new Item("59", 97, 6),
+//		new Item("60", 48, 2),
+//		new Item("61", 45, 16),
+//		new Item("62", 27, 12),
+//		new Item("63", 58, 9),
+//		new Item("64", 7, 19),
+//		new Item("65", 4, 8),
+//		new Item("66", 16, 20),
+//		new Item("67", 53, 19),
+//		new Item("68", 79, 4),
+//		new Item("69", 36, 2),
+//		new Item("70", 54, 1),
+//		new Item("71", 41, 5),
+//		new Item("72", 99, 8),
+//		new Item("73", 79, 17),
+//		new Item("74", 25, 20),
+//		new Item("75", 5, 6),
+//		new Item("76", 97, 4),
+//		new Item("77", 22, 18),
+//		new Item("78", 47, 1),
+//		new Item("79", 83, 4),
+//		new Item("80", 15, 16),
+//		new Item("81", 40, 3),
+//		new Item("82", 76, 8),
+//		new Item("83", 4, 18),
+//		new Item("84", 77, 9),
+//		new Item("85", 44, 17),
+//		new Item("86", 92, 19),
+//		new Item("87", 88, 19),
+//		new Item("88", 1, 1),
+//		new Item("89", 8, 12),
+//		new Item("90", 9, 9),
+//		new Item("91", 19, 19),
+//		new Item("92", 1, 13),
+//		new Item("93", 1, 13),
+//		new Item("94", 53, 8),
+//		new Item("95", 88, 20),
+//		new Item("96", 13, 17),
+//		new Item("97", 69, 2),
+//		new Item("98", 51, 8),
+//		new Item("99", 76, 9)
+//	};
 	
 //	private static final double CAPACITY = 10;
-//	private static final double CAPACITY = 7;
+	private static final double CAPACITY = 7;
 //	private static final double CAPACITY = 434;
 //	private static final double CAPACITY = 726;
 //	private static final double CAPACITY = 846;
 //	private static final double CAPACITY = 838;
 //	private static final double CAPACITY = 1152;
-	private static final double CAPACITY = 3428;
+//	private static final double CAPACITY = 3428;
 	
 	private static final int N = ITEMS.length;
 	
