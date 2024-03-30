@@ -2,11 +2,10 @@ package pack2;
 
 import java.util.*;
 
-public class Beute {
+public class CreateBeute {
 	public ArrayList<Item> beute;
 
-	public Beute(ArrayList<Item> items) {
-		this.beute = items;
+	public CreateBeute() {
 	}
 
 	public ArrayList<Item> getBeute() {

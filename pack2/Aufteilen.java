@@ -1,20 +1,33 @@
 package pack2;
 
+import java.util.*;
+import com.gurobi.gurobi.*;
+
 public class Aufteilen {
 
-	public Beute beute;
 
-	public Aufteilen(Beute beute) {
-		this.beute = beute;
+
+	public Aufteilen() throws GRBException {
+
+		GRBEnv env = new GRBEnv(true);
+		env.set("logFile", "LP.log");
+		env.set("OutputFlag", "0");
+		env.start();
 	}
-	
-	
-	
+
+
+		
+
 	
 
-	public static void main(String[] args) {
-		// TODO Auto-generated method stub
-		System.out.println("starte aufteilen");
+	public static void main(String[] args) throws GRBException {
+
+		Aufteilen aft = new Aufteilen();
+		int no_items = 20;
+		
+
+		
+
 	}
 
 }
