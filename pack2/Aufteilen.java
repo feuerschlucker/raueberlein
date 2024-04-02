@@ -21,9 +21,15 @@ public class Aufteilen {
 	
 
 	public static void main(String[] args) throws GRBException {
-
-		Aufteilen aft = new Aufteilen();
 		int no_items = 20;
+		
+		Beute beute = new Beute(no_items);
+		ArrayList<Item> items = beute.getBeute();
+		
+		
+		
+		Aufteilen aufteilen = new Aufteilen();
+		
 		
 
 		
