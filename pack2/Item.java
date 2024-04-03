@@ -1,12 +1,19 @@
 package pack2;
 
+import java.util.Random;
+
 public class Item {
-	public String bezeichnung;
-	public Double wert;
+	private String bezeichnung;
+	private Double wert;
+	private Random rnd;
 	
-	protected Item (String bezeichnung, Double wert) {
+	public Item (String bezeichnung, Double wert) {
 		this.bezeichnung = bezeichnung;
 		this.wert = wert;
+	}
+	
+	public Item () {
+		this.bezeichnung = "Item"+(rnd.nextInt());
 	}
 	
 	public Double getWert() {
@@ -16,5 +23,11 @@ public class Item {
 	public void setWert(Double wert) {
 		this.wert= wert;
 	}
+	public String getBezeichnung() {
+		return this.bezeichnung;
+	}
+	
+	
+	
 
 }
