@@ -11,7 +11,7 @@ import com.gurobi.gurobi.GRBVar;
 
 
 public class Aufteilen {
-	
+	// sjdfögrid
 	private GRBEnv env;
 	private int no_items;
 	private double[] werte;
