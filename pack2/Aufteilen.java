@@ -56,9 +56,10 @@ public class Aufteilen {
 		model.addConstr(exprvar, GRB.EQUAL, expr, "expr constraint");
 		
 		model.addGenConstrAbs(absexpr,exprvar,"abs_const");
+		// Expression to be absolute of Variable and minimized
 		GRBLinExpr expr_fin = new GRBLinExpr();
-		
 		expr_fin.addTerm(1, absexpr);
+		
 	    model.setObjective(expr_fin, GRB.MINIMIZE);
 	    
 	    
