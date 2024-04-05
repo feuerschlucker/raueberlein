@@ -29,6 +29,8 @@ public class Aufteilen {
 		env.set("OutputFlag", "0");
 		env.start();
 		int N = 20;
+		
+		//soem stuff
 		GRBModel model = new GRBModel(env);
 		GRBVar[] x = new GRBVar[N];
 		for (int i = 0; i < N; i++) {
