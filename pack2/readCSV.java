@@ -39,7 +39,6 @@ public class readCSV {
 		for (Item i : items) {
 			System.out.println(i.getBezeichnung()+": "+ i.getWert()+" €");
 		}
-		System.out.println("Teste GitHub");
 	}
 	
 }
