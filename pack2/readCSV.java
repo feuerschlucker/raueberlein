@@ -4,6 +4,8 @@ import java.util.*;
 import java.io.*;
 
 public class readCSV {
+	
+	/////skfngöadögköadkig
 	List<List<String>> records = new ArrayList<>();
 	String delimeter;
 	public readCSV(List<Item> items, String delimeter,  String filepath) throws FileNotFoundException{
