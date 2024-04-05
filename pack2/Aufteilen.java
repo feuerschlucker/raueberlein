@@ -8,10 +8,10 @@ import com.gurobi.gurobi.GRBException;
 import com.gurobi.gurobi.GRBLinExpr;
 import com.gurobi.gurobi.GRBModel;
 import com.gurobi.gurobi.GRBVar;
-import com.gurobi.gurobi.*;
+
 
 public class Aufteilen {
-
+	
 	private GRBEnv env;
 	private int no_items;
 	private double[] werte;
