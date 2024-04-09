@@ -17,6 +17,7 @@ public class Aufteilen {
 	private int no_items;
 	private double[] werte;
 	private ArrayList<Item> items = new ArrayList<>();
+	
 
 	public Aufteilen(ArrayList<Item> items) throws GRBException {
 		this.items = items;
@@ -33,12 +34,12 @@ public class Aufteilen {
 		env.set("logFile", "LP.log");
 		env.set("OutputFlag", "0");
 		env.start();
-		int N = 21;
+		//int N = 21;
 		
 		//soem stuff
 		GRBModel model = new GRBModel(env);
-		GRBVar[] x = new GRBVar[N];
-		for (int i = 0; i < N; i++) {
+		GRBVar[] x = new GRBVar[no_items];
+		for (int i = 0; i < no_items; i++) {
 			x[i] = model.addVar(0.0, 1.0, 0.0, GRB.CONTINUOUS, "x_" + i);
 		}
 		GRBVar[] eins = new GRBVar[1];
@@ -46,7 +47,7 @@ public class Aufteilen {
 		
 		
 		GRBLinExpr expr = new GRBLinExpr();
-		for (int i = 0; i < N; i++) {
+		for (int i = 0; i < no_items; i++) {
 			expr.addTerm(items.get(i).getWert()*2, x[i]);
 			expr.addTerm(items.get(i).getWert(), eins[0]);	
 		}
@@ -64,7 +65,6 @@ public class Aufteilen {
 	    model.setObjective(expr_fin, GRB.MINIMIZE);
 	    
 	    
-		
 	    model.optimize();
 		if (model.get(GRB.IntAttr.Status) == GRB.Status.OPTIMAL)
 		{
@@ -77,7 +77,7 @@ public class Aufteilen {
 				System.out.print(x[i].get(GRB.StringAttr.VarName) + " = " + x[i].get(GRB.DoubleAttr.X));
 				if (i < x.length - 1)
 				{
-					System.out.print(", ");
+					System.out.println(", ");
 				}
 				else
 				{
@@ -105,26 +105,26 @@ public class Aufteilen {
 	
 
 	public static void main(String[] args) throws GRBException {
-		int no_items = 21;
+		int no_items = 1000;
 
 		Beute beute = new Beute(no_items);
 		ArrayList<Item> items = beute.getBeute();
 
-		for (Item item : items) {
-			System.out.println(item.getWert() + "   " + item.getBezeichnung());
-		}
-		double[] aufteilung = new double[no_items];
-		
-		for (int i = 0;i<no_items;i++) {
-			aufteilung[i]=0.5;
-		}
+//		for (Item item : items) {
+//			System.out.println(item.getWert() + "   " + item.getBezeichnung());
+//		}
+//		double[] aufteilung = new double[no_items];
+//		
+//		for (int i = 0;i<no_items;i++) {
+//			aufteilung[i]=0.5;
+//		}
 		
 
 
 		Aufteilen auft = new Aufteilen(items);
 		auft.modelSetup();
 
-		System.out.print(auft.valueFunction(aufteilung));
+		//System.out.print(auft.valueFunction(aufteilung));
 
 	}
 
