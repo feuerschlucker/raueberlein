@@ -1,5 +1,10 @@
 package pack1;
-import com.gurobi.gurobi.*;
+import com.gurobi.gurobi.GRB;
+import com.gurobi.gurobi.GRBEnv;
+import com.gurobi.gurobi.GRBException;
+import com.gurobi.gurobi.GRBLinExpr;
+import com.gurobi.gurobi.GRBModel;
+import com.gurobi.gurobi.GRBVar;
 
 /**
  * Program solving the following LP using Gurobi:
@@ -12,7 +17,7 @@ import com.gurobi.gurobi.*;
  * @author Rostislav Stanek
  *
  */
-public class LP
+public class LP3
 {
 	public static void main(String[] args) throws GRBException
 	{
@@ -58,40 +63,18 @@ public class LP
 		expr = new GRBLinExpr();
 	    expr.addTerm(5.0, x[0]);
 	    expr.addTerm(1.0, x[1]);
-	    model.addConstr(expr, GRB.LESS_EQUAL, 35.0, "st_2");
+	    //model.addConstr(expr, GRB.LESS_EQUAL, 35.0, "st_2");
 	    
-
-	    
-	    //1st cutting plane (x_0 <= 6)
-	    
+	    //3rd constraint (x_0 <= 6)
 		expr = new GRBLinExpr();
 	    expr.addTerm(1.0, x[0]);
-	    model.addConstr(expr, GRB.LESS_EQUAL, 6.0, "cp_1");
+	    model.addConstr(expr, GRB.LESS_EQUAL, 6.0, "st_3");
 	    
-	    
-//	    //2th cutting plane (x_1 <= 3.25)
-//	    
-//		expr = new GRBLinExpr();
-//	    expr.addTerm(1.0, x[1]);
-//	    model.addConstr(expr, GRB.LESS_EQUAL, 3.25, "cp_0");
-	    
-	   
-	    
-	    //2nd cutting plane (x_0 + x_1 <= 9)
-	    
+	    //4th constraint (x_0 + x_1 <= 9)
 		expr = new GRBLinExpr();
 	    expr.addTerm(1.0, x[0]);
 	    expr.addTerm(1.0, x[1]);
-	    model.addConstr(expr, GRB.LESS_EQUAL, 9.0, "cp_2");
-	    
-	    
-	    //3rd cutting plane (2 x_0 -  x_1 <= 10)
-	    /*
-		expr = new GRBLinExpr();
-	    expr.addTerm(2.0, x[0]);
-	    expr.addTerm(-1.0, x[1]);
-	    model.addConstr(expr, GRB.LESS_EQUAL, 10.0, "cp_3");
-	    */
+	    //model.addConstr(expr, GRB.LESS_EQUAL, 9.0, "st_4");
 	    
 	    //start the solver
 		model.optimize();

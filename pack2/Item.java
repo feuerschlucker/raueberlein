@@ -26,8 +26,4 @@ public class Item {
 	public String getBezeichnung() {
 		return this.bezeichnung;
 	}
-	
-	
-	
-
 }

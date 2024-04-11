@@ -41,40 +41,14 @@ public class KnapsackProblem {
 
 	private static GRBEnv env;
 
-//	private static final Item[] ITEMS = { new Item("gooseberries", 3, 30), new Item("cheese", 5, 70),
-//			new Item("poppy", 6, 80), new Item("bread", 5, 20), new Item("wine", 7, 90) };
+
 
 	private static final Item[] ITEMS = { new Item("0", 1, 100), new Item("1", 2, 90), new Item("2", 3, 80),
 			new Item("3", 4, 70), new Item("4", 5, 60), new Item("5", 6, 50), new Item("6", 7, 40),
 			new Item("7", 8, 30), new Item("8", 9, 20), new Item("9", 10, 10) };
 
-//	private static final Item[] ITEMS = { new Item("0", 87, 17), new Item("1", 20, 18), new Item("2", 18, 5),
-//			new Item("3", 3, 18), new Item("4", 14, 6), new Item("5", 94, 3), new Item("6", 49, 4),
-//			new Item("7", 41, 20), new Item("8", 36, 19), new Item("9", 55, 17), new Item("10", 24, 16),
-//			new Item("11", 60, 6), new Item("12", 46, 8), new Item("13", 6, 3), new Item("14", 99, 19) };
-
-//	private static final Item[] ITEMS = { new Item("0", 39, 6), new Item("1", 74, 20), new Item("2", 99, 17),
-//			new Item("3", 57, 14), new Item("4", 81, 5), new Item("5", 99, 5), new Item("6", 1, 11),
-//			new Item("7", 22, 18), new Item("8", 63, 20), new Item("9", 16, 4), new Item("10", 40, 11),
-//			new Item("11", 58, 13), new Item("12", 36, 3), new Item("13", 42, 7), new Item("14", 88, 9),
-//			new Item("15", 67, 13), new Item("16", 67, 9), new Item("17", 40, 20), new Item("18", 55, 8),
-//			new Item("19", 47, 10) };
-
-//	private static final Item[] ITEMS = { new Item("0", 31, 4), new Item("1", 81, 18), new Item("2", 72, 19),
-//			new Item("3", 22, 18), new Item("4", 59, 5), new Item("5", 78, 4), new Item("6", 85, 3),
-//			new Item("7", 23, 6), new Item("8", 94, 8), new Item("9", 81, 10), new Item("10", 42, 15),
-//			new Item("11", 1, 14), new Item("12", 47, 18), new Item("13", 13, 17), new Item("14", 90, 7),
-//			new Item("15", 95, 1), new Item("16", 55, 15), new Item("17", 92, 17), new Item("18", 97, 9),
-//			new Item("19", 35, 2), new Item("20", 15, 7), new Item("21", 45, 12), new Item("22", 6, 16),
-//			new Item("23", 8, 10), new Item("24", 2, 15) };
-
-
-
-//	private static final double CAPACITY = 10;
 	private static final double CAPACITY = 7;
-//	private static final double CAPACITY = 434;
-//	private static final double CAPACITY = 726;
-//	private static final double CAPACITY = 846;
+
 
 
 	private static final int N = ITEMS.length;

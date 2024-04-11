@@ -27,4 +27,14 @@ public class Beute {
 		}
 	}
 
+    public void sortItemsByWert() {
+        Collections.sort(items, new Comparator<Item>() {
+            @Override
+            public int compare(Item item1, Item item2) {
+                // Compare the 'wert' attributes of items
+                return Double.compare(item1.getWert(), item2.getWert());
+            }
+        });
+    }
+	
 }
