@@ -17,6 +17,7 @@ public class Aufteilen2 {
 	private double[] werte;
 	private ArrayList<Item> items = new ArrayList<>();
 	private static int numberOfLPsSolvedUsingGurobi;
+	private double startbound;
 
 	public Aufteilen2(ArrayList<Item> items) throws GRBException {
 		this.items = items;
@@ -27,7 +28,8 @@ public class Aufteilen2 {
 		}
 	}
 
-	public void modelSetup() throws GRBException {
+	public void modelSetup(double startbound) throws GRBException {
+		this.startbound = startbound;
 		this.env = new GRBEnv(true);
 		env.set("logFile", "LP.log");
 		env.set("OutputFlag", "0");
@@ -64,23 +66,22 @@ public class Aufteilen2 {
 		model.setObjective(expr_fin, GRB.MINIMIZE);
 		model.optimize();
 		numberOfLPsSolvedUsingGurobi++;
+		System.out.println(numberOfLPsSolvedUsingGurobi);
 
 		double[] result = new double[no_items];
 
 		if (model.get(GRB.IntAttr.Status) == GRB.Status.OPTIMAL) {
 			System.out.println("Objective function value: " + model.get(GRB.DoubleAttr.ObjVal));
 			for (int i = 0; i < x.length; i++) {
-				System.out.print(x[i].get(GRB.StringAttr.VarName) + " = " + x[i].get(GRB.DoubleAttr.X));
-				if (i < x.length - 1) {
-					System.out.print(", ");
-				} else {
-					System.out.println();
-				}
+				System.out.print(x[i].get(GRB.StringAttr.VarName) + " = " + x[i].get(GRB.DoubleAttr.X) + ", ");
 			}
+			System.out.println("");
 			
 			for (int i = 0; i < no_items; i++)
 			{
+				//System.out.println("i= "+i+" "+x[i].get(GRB.DoubleAttr.X)+ "  "+model.get(GRB.DoubleParam.IntFeasTol));
 				if (x[i].get(GRB.DoubleAttr.X) > model.get(GRB.DoubleParam.IntFeasTol) && x[i].get(GRB.DoubleAttr.X) < 1 - model.get(GRB.DoubleParam.IntFeasTol))
+					
 				{
 					fixedTo0[i] = true;
 					double[] solution0 = branchAndBound(fixedTo0, fixedTo1);
@@ -138,6 +139,21 @@ public class Aufteilen2 {
 		}
 		return vf;
 	}
+	
+	
+	public double startHeuristic(ArrayList<Item> items) {
+		double sum1 = 0.0;
+		double sum2 =0.0;
+		for (int i = 0; i<items.size();i++) {
+			if(items.get(i).getWert()+sum1 >=sum2) {
+				sum2 += items.get(i).getWert();
+			}else {
+				sum1+=items.get(i).getWert();
+			}	
+		}
+		
+		return Math.abs(sum2-sum1);
+	}
 
 	public double xxxBound(ArrayList<Item> items) {
 
@@ -145,7 +161,7 @@ public class Aufteilen2 {
 	}
 
 	public static void main(String[] args) throws GRBException {
-		int no_items = 3;
+		int no_items = 6;
 
 		Beute beute = new Beute(no_items);
 		ArrayList<Item> items = beute.getBeute();
@@ -157,8 +173,12 @@ public class Aufteilen2 {
 		}
 
 		Aufteilen2 auft = new Aufteilen2(items);
-		auft.modelSetup();
+		double startbound = auft.startHeuristic(items);
+		
+		auft.modelSetup(startbound);
 
+		System.out.println(startbound);
+		
 		double[] solution = auft.branchAndBound(new boolean[no_items], new boolean[no_items]);
 		
 		System.out.println(solution);
