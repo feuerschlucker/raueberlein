@@ -11,26 +11,26 @@ import com.gurobi.gurobi.GRBVar;
 
 public class Aufteilen2 {
 
-	// Neues Kommentar
-	private GRBEnv env;
-	private int no_items;
-	private double[] werte;
-	private ArrayList<Item> items = new ArrayList<>();
-	private static int numberOfLPsSolvedUsingGurobi;
-	private double startbound;
+	
+	private GRBEnv env; // Gurobi Environment
+	private int no_items; // Number of items
+	private double[] werte; // Array of item values
+	private ArrayList<Item> items = new ArrayList<>(); // Item-List
+	private static int numberOfLPsSolvedUsingGurobi; // LP Counter
+	private double startbound; //
 
 	public Aufteilen2(ArrayList<Item> items) throws GRBException {
-		this.items = items;
-		this.no_items = items.size();
-		this.werte = new double[no_items];
+		this.items = items; // Item-List
+		this.no_items = items.size(); // List size
+		this.werte = new double[no_items]; 
 		for (int i = 0; i < no_items; i++) {
-			werte[i] = items.get(i).getWert();
+			werte[i] = items.get(i).getWert(); //Item values
 		}
 	}
 
 	public void modelSetup(double startbound) throws GRBException {
 		this.startbound = startbound;
-		this.env = new GRBEnv(true);
+		this.env = new GRBEnv(true); // New Gurobi enviroment
 		env.set("logFile", "LP.log");
 		env.set("OutputFlag", "0");
 		env.start();
@@ -40,9 +40,9 @@ public class Aufteilen2 {
 
 	private double[] branchAndBound(boolean[] fixedTo0, boolean[] fixedTo1) throws GRBException {
 		GRBModel model = new GRBModel(env);
-		GRBVar[] x = new GRBVar[no_items];
+		GRBVar[] x = new GRBVar[no_items]; // Array Gurobi variables weights
 		for (int i = 0; i < no_items; i++) {
-			if (fixedTo0[i]) {
+			if (fixedTo0[i]) { 
 				x[i] = model.addVar(0.0, 0.0, 0.0, GRB.CONTINUOUS, "x_" + i);
 			} else if (fixedTo1[i]) {
 				x[i] = model.addVar(1.0, 1.0, 0.0, GRB.CONTINUOUS, "x_" + i);
@@ -50,21 +50,24 @@ public class Aufteilen2 {
 				x[i] = model.addVar(0.0, 1.0, 0.0, GRB.CONTINUOUS, "x_" + i);
 			}
 		}
-		GRBVar[] eins = new GRBVar[1];
-		eins[0] = model.addVar(-1.0, -1.0, -1.0, GRB.CONTINUOUS, "eins");
-		GRBLinExpr expr = new GRBLinExpr();
-		for (int i = 0; i < no_items; i++) {
-			expr.addTerm(items.get(i).getWert() * 2, x[i]);
-			expr.addTerm(items.get(i).getWert(), eins[0]);
+		// Set up LP and boundaries
+		GRBVar[] eins = new GRBVar[1]; // Constant Variable
+		eins[0] = model.addVar(-1.0, -1.0, -1.0, GRB.CONTINUOUS, "eins"); // Set Constant to minus one
+		GRBLinExpr expr = new GRBLinExpr(); // New expression
+		for (int i = 0; i < no_items; i++) { // Create expression a + b 
+			expr.addTerm(items.get(i).getWert() * 2, x[i]); // a = w*2*x(i)
+			expr.addTerm(items.get(i).getWert(), eins[0]); // b = w*1
 		}
-		GRBVar exprvar = model.addVar(-GRB.INFINITY, GRB.INFINITY, 0.0, GRB.CONTINUOUS, "exprvar");
-		GRBVar absexpr = model.addVar(0.0, GRB.INFINITY, 1.0, GRB.CONTINUOUS, "absexpr");
-		model.addConstr(exprvar, GRB.EQUAL, expr, "expr constraint");
-		model.addGenConstrAbs(absexpr, exprvar, "abs_const");
-		GRBLinExpr expr_fin = new GRBLinExpr();
-		expr_fin.addTerm(1, absexpr);
-		model.setObjective(expr_fin, GRB.MINIMIZE);
-		model.optimize();
+		GRBVar exprvar = model.addVar(-GRB.INFINITY, GRB.INFINITY, 0.0, GRB.CONTINUOUS, "exprvar"); // Variable expression
+		GRBVar absexpr = model.addVar(0.0, GRB.INFINITY, 1.0, GRB.CONTINUOUS, "absexpr"); // Variable absolute expression
+		model.addConstr(exprvar, GRB.EQUAL, expr, "expr constraint"); // Variable == expression
+		model.addGenConstrAbs(absexpr, exprvar, "abs_const"); // Absolute Variable == abs(Variable)
+		GRBLinExpr expr_fin = new GRBLinExpr(); // Final expression
+		expr_fin.addTerm(1, absexpr); // Absolute Variable *1
+		model.setObjective(expr_fin, GRB.MINIMIZE); // Minimize final expression
+		
+		// optimize 
+		model.optimize(); 
 		numberOfLPsSolvedUsingGurobi++;
 		System.out.println(numberOfLPsSolvedUsingGurobi);
 
@@ -153,7 +156,7 @@ public class Aufteilen2 {
 	}
 
 	public static void main(String[] args) throws GRBException {
-		int no_items = 6;
+		int no_items =15;
 
 		Beute beute = new Beute(no_items);
 		ArrayList<Item> items = beute.getBeute();
