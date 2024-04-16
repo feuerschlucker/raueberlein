@@ -156,7 +156,7 @@ public class Aufteilen2 {
 	}
 
 	public static void main(String[] args) throws GRBException {
-		int no_items =15;
+		int no_items = 50;
 
 		Beute beute = new Beute(no_items);
 		ArrayList<Item> items = beute.getBeute();

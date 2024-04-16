@@ -9,7 +9,7 @@ import com.gurobi.gurobi.GRBLinExpr;
 import com.gurobi.gurobi.GRBModel;
 import com.gurobi.gurobi.GRBVar;
 
-public class Aufteilen3 {
+public class Aufteilen4 {
 
 
 	private GRBEnv env; // Gurobi Environment
@@ -19,17 +19,18 @@ public class Aufteilen3 {
 	private static int numberOfLPsSolvedUsingGurobi; // LP Counter
 	private double startbound; //Value of Startheuristic
 
-	public Aufteilen3(ArrayList<Item> items) throws GRBException {
+	public Aufteilen4(ArrayList<Item> items) throws GRBException {
 		this.items = items; // Item-List
 		this.no_items = items.size(); // List size
 		this.werte = new double[no_items]; 
 		for (int i = 0; i < no_items; i++) {
 			werte[i] = items.get(i).getWert(); //Item values
-		}
+		}		
+		this.startbound = startHeuristic(items);
+		System.out.println(startbound);
 	}
 
-	public void modelSetup(double startbound) throws GRBException {
-		this.startbound = startbound;
+	public void modelSetup() throws GRBException {
 		this.env = new GRBEnv(true); // New Gurobi enviroment
 		env.set("logFile", "LP.log");
 		env.set("OutputFlag", "0");
@@ -84,7 +85,7 @@ public class Aufteilen3 {
 			for (int i = 0; i < no_items; i++)
 			{
 				//System.out.println("i= "+i+" "+x[i].get(GRB.DoubleAttr.X)+ "  "+model.get(GRB.DoubleParam.IntFeasTol));
-				// Check if variables are not 0 or 1
+				// Check if variables are not 0 or 1 within a epsilon
 				if (x[i].get(GRB.DoubleAttr.X) > model.get(GRB.DoubleParam.IntFeasTol) && x[i].get(GRB.DoubleAttr.X) < 1 - model.get(GRB.DoubleParam.IntFeasTol))
 				{
 					fixedTo0[i] = true; // fix weight to zero
@@ -98,47 +99,37 @@ public class Aufteilen3 {
 						};
 					}
 					double[] solution0;
-					if (Math.abs(valueFunction(checkbound))< startbound) {
-						startbound = Math.abs(valueFunction(checkbound));
+					double[] solution1;
+					if (numberOfLPsSolvedUsingGurobi <= 1) {
+						fixedTo0[i] = true;
 						solution0 = branchAndBound(fixedTo0, fixedTo1); // Get solution for fixed to zero
 						fixedTo0[i] = false; // Un-fix it from zero
-					}else{
-						solution0 = null;
+						return solution0;
+					}else {
+						fixedTo0[i] = true;
+						solution0 = branchAndBound(fixedTo0, fixedTo1); // Get solution for fixed to zero
+						fixedTo0[i] = false; // Un-fix it from zero
+	
+						fixedTo1[i] = true; // fix weight to zero
+						solution1 = branchAndBound(fixedTo0, fixedTo1); // Get solution for fixed to zero
+						fixedTo1[i] = false;
 					}
-
-
-					fixedTo1[i] = true; // fix weight to zero
-					double[] solution1 = branchAndBound(fixedTo0, fixedTo1); // Get solution for fixed to zero
-					fixedTo1[i] = false;
-					
-					if (solution0 == null)
+					double ov0 = valueFunction(solution0);
+					double ov1 = valueFunction(solution1);
+					if (Math.abs(ov0) < Math.abs(ov1)) // compare solutions, return better one
 					{
 						model.dispose();
-						return solution1; // return solution 1
-					}
-					else if (solution1 == null)
-					{
-						model.dispose();
-						return solution0; // return solution 0
+						return solution0;
 					}
 					else
 					{
-						double ov0 = valueFunction(solution0);
-						double ov1 = valueFunction(solution1);
-						if (Math.abs(ov0) < Math.abs(ov1)) // compare solutions, return better one
-						{
-							model.dispose();
-							return solution0;
-						}
-						else
-						{
-							model.dispose();
-							return solution1;
-						}
+						model.dispose();
+						return solution1;
 					}
+				
 				}
 			}
-			// When does this apply?
+			// When every weight is zero or one get the result array and 
 			for (int i = 0; i < no_items; i++)
 			{			
 				result[i]=  x[i].get(GRB.DoubleAttr.X);	// get result Array of weights
@@ -181,7 +172,7 @@ public class Aufteilen3 {
 	}
 
 	public static void main(String[] args) throws GRBException {
-		int no_items = 15;
+		int no_items = 6;
 
 		Beute beute = new Beute(no_items);
 		ArrayList<Item> items = beute.getBeute();
@@ -192,12 +183,11 @@ public class Aufteilen3 {
 			System.out.println(item.getWert() + "   " + item.getBezeichnung());
 		}
 
-		Aufteilen3 auft = new Aufteilen3(items);
+		Aufteilen4 auft = new Aufteilen4(items);
 		double startbound = auft.startHeuristic(items);
 		
-		auft.modelSetup(startbound);
+		auft.modelSetup();
 
-		System.out.println(startbound);
 		
 		double[] solution = auft.branchAndBound(new boolean[no_items], new boolean[no_items]);
 		
