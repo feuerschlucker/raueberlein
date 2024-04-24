@@ -9,7 +9,7 @@ import com.gurobi.gurobi.GRBLinExpr;
 import com.gurobi.gurobi.GRBModel;
 import com.gurobi.gurobi.GRBVar;
 
-public class Aufteilen2 {
+public class AufteilenXXX {
 
 	
 	private GRBEnv env; // Gurobi Environment
@@ -19,7 +19,7 @@ public class Aufteilen2 {
 	private static int numberOfLPsSolvedUsingGurobi; // LP Counter
 	private double startbound; //
 
-	public Aufteilen2(ArrayList<Item> items) throws GRBException {
+	public AufteilenXXX(ArrayList<Item> items) throws GRBException {
 		this.items = items; // Item-List
 		this.no_items = items.size(); // List size
 		this.werte = new double[no_items]; 
@@ -140,7 +140,7 @@ public class Aufteilen2 {
 		double sum1 = 0.0;
 		double sum2 = 0.0;
 		for (int i = 0; i < items.size(); i++) {
-			if (sum1 >= sum2) {
+			if (items.get(i).getWert() + sum1 >= sum2) {
 				sum2 += items.get(i).getWert();
 			} else {
 				sum1 += items.get(i).getWert();
@@ -156,7 +156,7 @@ public class Aufteilen2 {
 	}
 
 	public static void main(String[] args) throws GRBException {
-		int no_items = 6;
+		int no_items =15;
 
 		Beute beute = new Beute(no_items);
 		ArrayList<Item> items = beute.getBeute();
@@ -167,12 +167,12 @@ public class Aufteilen2 {
 			System.out.println(item.getWert() + "   " + item.getBezeichnung());
 		}
 
-		Aufteilen2 auft = new Aufteilen2(items);
+		AufteilenXXX auft = new AufteilenXXX(items);
 		double startbound = auft.startHeuristic(items);
 
 		auft.modelSetup(startbound);
 
-		System.out.println("startbound  : "+startbound);
+		System.out.println(startbound);
 
 		double[] solution = auft.branchAndBound(new boolean[no_items], new boolean[no_items]);
 

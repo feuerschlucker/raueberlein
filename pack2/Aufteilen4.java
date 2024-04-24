@@ -77,9 +77,9 @@ public class Aufteilen4 {
 		// Check if a solution is found and return it
 		if (model.get(GRB.IntAttr.Status) == GRB.Status.OPTIMAL) { // Found solution is optimal
 			System.out.println("Objective function value: " + model.get(GRB.DoubleAttr.ObjVal)); // value function of Gurobi
-			for (int i = 0; i < x.length; i++) { // Print weight value for found solution
-				System.out.print(x[i].get(GRB.StringAttr.VarName) + " = " + x[i].get(GRB.DoubleAttr.X) + ", ");
-			}
+//			for (int i = 0; i < x.length; i++) { // Print weight value for found solution
+//				System.out.print(x[i].get(GRB.StringAttr.VarName) + " = " + x[i].get(GRB.DoubleAttr.X) + ", ");
+//			}
 			System.out.println("");
 			
 			for (int i = 0; i < no_items; i++)
@@ -88,16 +88,7 @@ public class Aufteilen4 {
 				// Check if variables are not 0 or 1 within a epsilon
 				if (x[i].get(GRB.DoubleAttr.X) > model.get(GRB.DoubleParam.IntFeasTol) && x[i].get(GRB.DoubleAttr.X) < 1 - model.get(GRB.DoubleParam.IntFeasTol))
 				{
-					fixedTo0[i] = true; // fix weight to zero
-					// WHAT DOES THIS DO
-					double[] checkbound = new double[no_items]; 
-					for (int j = 0;j<no_items;j++) {
-						if (j != i) {
-							checkbound[j] = x[j].get(GRB.DoubleAttr.X);
-						}else{
-							checkbound[j] = 0;
-						};
-					}
+		
 					double[] solution0;
 					double[] solution1;
 					if (numberOfLPsSolvedUsingGurobi <= 1) {
@@ -172,7 +163,7 @@ public class Aufteilen4 {
 	}
 
 	public static void main(String[] args) throws GRBException {
-		int no_items = 6;
+		int no_items = 15;
 
 		Beute beute = new Beute(no_items);
 		ArrayList<Item> items = beute.getBeute();
