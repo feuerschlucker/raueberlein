@@ -150,10 +150,6 @@ public class Aufteilen2 {
 		return Math.abs(sum2 - sum1);
 	}
 
-	public double xxxBound(ArrayList<Item> items) {
-
-		return 0.0;
-	}
 
 	public static void main(String[] args) throws GRBException {
 		int no_items = 6;
@@ -170,6 +166,10 @@ public class Aufteilen2 {
 		Aufteilen2 auft = new Aufteilen2(items);
 		double startbound = auft.startHeuristic(items);
 
+		
+		
+		
+		
 		auft.modelSetup(startbound);
 
 		System.out.println("startbound  : "+startbound);
