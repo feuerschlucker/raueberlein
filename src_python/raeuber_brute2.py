@@ -28,7 +28,7 @@ def create_solutions(start: int, stop: int, no_items: int, event, best_queue, be
                 print(f'!!! ovf below cutoff of {cutoff} !!!')
                 event.set()
 
-    best_queue.put_nowait(best)
+    best_queue.put(best)
 
 
 def start_heuristic(weights):
@@ -47,13 +47,13 @@ def start_heuristic(weights):
 
 def main():
 
-    durchlaeufe = 10
-    cutoff = 0.000001
+    durchlaeufe = 2
+    cutoff = 0.00000001
 
     for dulf in range(durchlaeufe):
         name = f"lognormal_dist_realisation {dulf+1}"
         timestart = time.time()
-        no_items = 24
+        no_items = 18
 
         items = instances.create_itemlist_lognormal(no_items, name)
 
@@ -63,7 +63,7 @@ def main():
         best_ovf = abs(weights.sum())
 
         splits = multiprocessing.cpu_count()
-        splits = 2
+        # splits = 2
         event = Event()
         best_queue = Queue()
 
