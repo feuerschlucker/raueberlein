@@ -38,13 +38,16 @@ def plot(df: pd.DataFrame, title: str, name: str, no_items: int) -> None:
 
 
 def save_as_csv(df: pd.DataFrame, name: str) -> None:
-    df.to_csv(f"Data/{name}", index=False)
+    new_order = ['name', 'wert']
+
+    df_reordered = df.reindex(columns=new_order)
+    df_reordered.to_csv(f"Data/{name}", index=False)
 
 
 def main():
 
     no_items = [8, 10, 12, 14, 16, 18, 20, 21, 22, 23, 24, 25, 2000]
-    no_items = [100000]
+
     for i in range(len(no_items)):
 
         name = f"beta_dist_{no_items[i]}"
