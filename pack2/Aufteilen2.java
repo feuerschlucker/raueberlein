@@ -19,7 +19,8 @@ public class Aufteilen2 {
 	private static int numberOfLPsSolvedUsingGurobi; // LP Counter
 	private double startbound; //
 
-	public Aufteilen2(ArrayList<Item> items) throws GRBException {
+	public Aufteilen2(Beute beute) throws GRBException {
+		ArrayList<Item> items = beute.getBeute();
 		this.items = items; // Item-List
 		this.no_items = items.size(); // List size
 		this.werte = new double[no_items]; 
@@ -153,9 +154,8 @@ public class Aufteilen2 {
 
 	public static void main(String[] args) throws GRBException {
 		int no_items = 6;
-
 		Beute beute = new Beute(no_items);
-		ArrayList<Item> items = beute.getBeute();
+		ArrayList<Item> items = beute.getBeute();		
 
 		beute.sortItemsByWert();
 
@@ -163,7 +163,7 @@ public class Aufteilen2 {
 			System.out.println(item.getWert() + "   " + item.getBezeichnung());
 		}
 
-		Aufteilen2 auft = new Aufteilen2(items);
+		Aufteilen2 auft = new Aufteilen2(beute);
 		double startbound = auft.startHeuristic(items);
 
 		

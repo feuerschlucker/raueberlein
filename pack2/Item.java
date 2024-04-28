@@ -26,4 +26,9 @@ public class Item {
 	public String getBezeichnung() {
 		return this.bezeichnung;
 	}
+	
+	@Override
+	public String toString() {
+		return this.bezeichnung+":"+this.wert;		
+	}
 }

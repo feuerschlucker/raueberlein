@@ -37,7 +37,11 @@ public class readCSV {
 	
 	public static void main(String[] args) throws FileNotFoundException {
 		List<Item> items = new ArrayList<>();
+		
+		
 		readCSV a = new readCSV(items,",", "C:\\Users\\tasug\\Documents\\Leoben\\Operations Research\\RaeuberInnenProject\\TestItems.csv");
+		
+		
 		for (Item i : items) {
 			System.out.println(i.getBezeichnung()+": "+ i.getWert()+" €");
 		}
