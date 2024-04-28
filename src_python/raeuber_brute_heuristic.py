@@ -46,7 +46,6 @@ def start_heuristic(weights):
 
 
 def is_MonaLisa_distributed(items):
-
     sum_value = items['wert'].sum()
     max_value = items['wert'].max()
     if max_value >= sum_value/2:
@@ -55,6 +54,16 @@ def is_MonaLisa_distributed(items):
     else:
         print(sum_value, max_value)
         return False
+
+
+def MonaLisa_solution(items):
+    items["Raeuber1"] = 0
+    items["Raeuber2"] = 1
+    row = items["wert"].idxmax()
+    items.loc[row, "Raeuber1"] = 1
+    items.loc[row, "Raeuber2"] = 0
+    print(items)
+    return items
 
 
 def is_Banksy_distributed(items):
@@ -73,10 +82,21 @@ def main():
     for dulf in range(durchlaeufe):
         name = f"lognormal_dist_realisation {dulf+1}"
         timestart = time.time()
-        no_items = 18
+        no_items = 20
 
         items = instances.create_itemlist_lognormal(no_items, name)
-        print(is_MonaLisa_distributed(items))
+        items.loc[0, "wert"] = 3000
+
+        if is_MonaLisa_distributed(items):
+            name = name + "_solution"
+            items = MonaLisa_solution(items)
+
+            instances.save_as_csv(items, name)
+            continue
+
+        if len(no_items) >= 23:
+
+            pass
         best_solution = []
         weights = np.array(items["wert"])
         # print(weights)
