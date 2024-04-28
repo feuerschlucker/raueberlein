@@ -45,6 +45,26 @@ def start_heuristic(weights):
     return abs(sum1-sum2)
 
 
+def is_MonaLisa_distributed(items):
+
+    sum_value = items['wert'].sum()
+    max_value = items['wert'].max()
+    if max_value >= sum_value/2:
+        print(sum_value, max_value)
+        return True
+    else:
+        print(sum_value, max_value)
+        return False
+
+
+def is_Banksy_distributed(items):
+    if len(weights) % 2:
+        return False
+    weights = np.array(items["wert"])
+    weights = np.sort(weights)[::-1]
+    mean = weights.mean()
+
+
 def main():
 
     durchlaeufe = 2
@@ -56,7 +76,7 @@ def main():
         no_items = 18
 
         items = instances.create_itemlist_lognormal(no_items, name)
-
+        print(is_MonaLisa_distributed(items))
         best_solution = []
         weights = np.array(items["wert"])
         # print(weights)
