@@ -42,15 +42,19 @@ def start_heuristic(items):
     weights = np.sort(weights)[::-1]
     weights = np.sort(weights)
     weights = weights[::-1]
+    solution = []
     # print(weights)
     sum1 = 0
     sum2 = 0
     for i in range(0, len(weights)):
         if sum1 >= sum2:
             sum2 = sum2+weights[i]
+            solution.append(0)
         else:
             sum1 = sum1+weights[i]
-    return abs(sum1-sum2)
+            solution.append(1)
+    print(solution)
+    return (sum1-sum2)
 
 
 def is_MonaLisa_distributed(items):
@@ -92,13 +96,14 @@ def Banksy_solution(items):
 
 
 def main():
-    iterations = 1
+    iterations = 5
     cutoff = 0.00000001
     for iteration in range(iterations):
         name = f"lognormal_dist_realisation {iteration+1}"
         timestart = time.time()
-        no_items = 28
+        no_items = 19
         items = instances.create_itemlist_lognormal(no_items, name)
+
         # items = instances.read_csv_instance("test_heuristic.csv")
         # print(items)
         # no_items = len(items)
@@ -118,6 +123,7 @@ def main():
                 instances.save_as_csv(items, name)
 
         if len(items) >= 26:
+            offset = start_heuristic(items[0:len(items)-26])
             items = items.sort_values(by=["wert"], ascending=False)
             print(items)
             pass
@@ -141,7 +147,7 @@ def main():
         best_queue = Queue()
         splits = 5
         arguments = []
-        item = []
+        paramlist = []
         increment = int((2**(no_items))/2/splits)
         print(increment)
         start = 0
@@ -153,9 +159,9 @@ def main():
                 stop = 2**(no_items)/2
             else:
                 stop = start + increment
-            item = [event, int(start), int(stop), no_items,
-                    best_queue, best_ovf, weights, cutoff, offset]
-            arguments.append(item)
+            paramlist = [event, int(start), int(stop), no_items,
+                         best_queue, best_ovf, weights, cutoff, offset]
+            arguments.append(paramlist)
             start = start+increment
             # print("stop : ", stop)
 
