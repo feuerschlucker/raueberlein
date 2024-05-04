@@ -14,7 +14,7 @@ import gc
 
 def create_solutions(start: int, stop: int, no_items: int, event, best_queue, best_ovf, weights, cutoff, offset):
     xxx = time.time()
-    print(f"start : {start} , stop : {stop}")
+    # print(f"start : {start} , stop : {stop}")
     best = {"ovf": best_ovf, "sol": weights}
     for number in range(start, stop):
         if event.is_set():  # break condition if one of the other threads has already stoopped.
@@ -23,7 +23,7 @@ def create_solutions(start: int, stop: int, no_items: int, event, best_queue, be
         permutation = [int(char) for char in binary_number]
         solution = np.array(permutation)
         ovf = np.dot((solution * 2-1), weights)
-        ovf = ovf - offset
+        ovf = abs(ovf) - abs(offset)
         if abs(ovf) < abs(best_ovf):
             best_ovf = abs(ovf)
             best_solution = tuple(permutation)
@@ -34,27 +34,31 @@ def create_solutions(start: int, stop: int, no_items: int, event, best_queue, be
 
     best_queue.put(best)
     gc.collect()
-    print(f" stop after : {time.time()-xxx}")
+    # print(f" stop after : {time.time()-xxx}")
 
 
 def start_heuristic(items):
     weights = np.array(items["wert"])
-    weights = np.sort(weights)[::-1]
-    weights = np.sort(weights)
-    weights = weights[::-1]
-    solution = []
     # print(weights)
+    items["Raeuber1"] = 0
+    items["Raeuber2"] = 0
     sum1 = 0
     sum2 = 0
     for i in range(0, len(weights)):
-        if sum1 >= sum2:
-            sum2 = sum2+weights[i]
-            solution.append(0)
-        else:
+        if sum2 >= sum1:
             sum1 = sum1+weights[i]
-            solution.append(1)
-    print(solution)
-    return (sum1-sum2)
+            items.loc[i, "Raeuber1"] = 1
+
+        else:
+            sum2 = sum2+weights[i]
+            items.loc[i, "Raeuber2"] = 1
+    return items
+
+
+def compute_offset(items):
+    sum_rb1 = (items["wert"]*items["Raeuber1"]).sum()
+    sum_rb2 = (items["wert"]*items["Raeuber2"]).sum()
+    return (sum_rb1-sum_rb2)
 
 
 def is_MonaLisa_distributed(items):
@@ -96,12 +100,14 @@ def Banksy_solution(items):
 
 
 def main():
-    iterations = 5
+    iterations = 1
+    offset = 0
     cutoff = 0.00000001
     for iteration in range(iterations):
         name = f"lognormal_dist_realisation {iteration+1}"
         timestart = time.time()
-        no_items = 19
+        no_items = 30
+        orig_no_items = no_items
         items = instances.create_itemlist_lognormal(no_items, name)
 
         # items = instances.read_csv_instance("test_heuristic.csv")
@@ -123,14 +129,26 @@ def main():
                 instances.save_as_csv(items, name)
 
         if len(items) >= 26:
-            offset = start_heuristic(items[0:len(items)-26])
-            items = items.sort_values(by=["wert"], ascending=False)
+
+            items = items.sort_values(
+                by=["wert"], ascending=False, ignore_index=True)
+
+            items_heuristik = items[0:len(items)-20]
+            items = (items[len(items)-20:])
+            items = items.reset_index(drop=True)
+            print("xxxxxxxxxxx")
             print(items)
-            pass
+            heuristic_solution = start_heuristic(
+                items_heuristik)
+            print(heuristic_solution)
+            offset = compute_offset(heuristic_solution)
+            print(offset)
+            no_items = 20
 
         best_solution = []
         weights = np.array(items["wert"])
-        best_ovf = abs(weights.sum())
+
+        best_ovf = abs(weights.sum()) + abs(offset)
 
         splits = multiprocessing.cpu_count()
         # print(len(items))
@@ -151,7 +169,6 @@ def main():
         increment = int((2**(no_items))/2/splits)
         print(increment)
         start = 0
-        offset = 0
 
         for i in range(splits):
             # print("start : ", start)
@@ -166,7 +183,9 @@ def main():
             # print("stop : ", stop)
 
         processes = [Process(target=create_solutions, args=(
-            start, stop, no_items, event, best_queue, best_ovf, weights, cutoff, offset)) for event, start, stop, no_items, best_queue, best_ovf, weights, cutoff, offset in arguments]
+            start, stop, no_items, event, best_queue, best_ovf, weights,
+            cutoff, offset))for event, start, stop, no_items, best_queue,
+            best_ovf, weights, cutoff, offset in arguments]
 
         for process in processes:
             process.start()
@@ -186,12 +205,21 @@ def main():
         items["Raeuber1"] = best_solution
         items["Raeuber2"] = 1 - items["Raeuber1"]
         print(items)
+        offset2 = compute_offset(items)
 
+        if (offset * offset2 > 0):
+            items["Raeuber1"] = items["Raeuber2"]
+            items["Raeuber2"] = 1 - items["Raeuber1"]
+        offset2 = compute_offset(items)
+        if orig_no_items >= 26:
+            best_ovf = offset + offset2
+
+        items = pd.concat([heuristic_solution, items], ignore_index=True)
+        print(items)
         print("best ovf : ", best_ovf)
         print("duration : ", time.time()-timestart, " sec")
         print("xxxxxxxxxxxxxxxxxxxxxxx Halas xxxxxxxxxxxxxxxxxxxxxxx")
-        # stheu = start_heuristic(weights)
-        # print("heuristic :", stheu)
+
         gc.collect()
 
 
