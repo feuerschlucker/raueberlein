@@ -11,7 +11,6 @@ import com.gurobi.gurobi.GRBVar;
 
 public class AufteilungsAlgorithmus {
 
-	
 	private GRBEnv env; // Gurobi Environment
 	private int no_items; // Number of items
 	private double[] werte; // Array of item values
@@ -23,9 +22,9 @@ public class AufteilungsAlgorithmus {
 		ArrayList<Item> items = beute.getBeute();
 		this.items = items; // Item-List
 		this.no_items = items.size(); // List size
-		this.werte = new double[no_items]; 
+		this.werte = new double[no_items];
 		for (int i = 0; i < no_items; i++) {
-			werte[i] = items.get(i).getWert(); //Item values
+			werte[i] = items.get(i).getWert(); // Item values
 		}
 		//this.startbound = startHeuristic(items);
 	}
@@ -43,7 +42,7 @@ public class AufteilungsAlgorithmus {
 		GRBModel model = new GRBModel(env);
 		GRBVar[] x = new GRBVar[no_items]; // Array Gurobi variables weights
 		for (int i = 0; i < no_items; i++) {
-			if (fixedTo0[i]) { 
+			if (fixedTo0[i]) {
 				x[i] = model.addVar(0.0, 0.0, 0.0, GRB.CONTINUOUS, "x_" + i);
 			} else if (fixedTo1[i]) {
 				x[i] = model.addVar(1.0, 1.0, 0.0, GRB.CONTINUOUS, "x_" + i);
@@ -55,64 +54,65 @@ public class AufteilungsAlgorithmus {
 		GRBVar[] eins = new GRBVar[1]; // Constant Variable
 		eins[0] = model.addVar(-1.0, -1.0, -1.0, GRB.CONTINUOUS, "eins"); // Set Constant to minus one
 		GRBLinExpr expr = new GRBLinExpr(); // New expression
-		for (int i = 0; i < no_items; i++) { // Create expression a + b 
+		for (int i = 0; i < no_items; i++) { // Create expression a + b
 			expr.addTerm(items.get(i).getWert() * 2, x[i]); // a = w*2*x(i)
 			expr.addTerm(items.get(i).getWert(), eins[0]); // b = w*1
 		}
-		GRBVar exprvar = model.addVar(-GRB.INFINITY, GRB.INFINITY, 0.0, GRB.CONTINUOUS, "exprvar"); // Variable expression
-		GRBVar absexpr = model.addVar(0.0, GRB.INFINITY, 1.0, GRB.CONTINUOUS, "absexpr"); // Variable absolute expression
+		GRBVar exprvar = model.addVar(-GRB.INFINITY, GRB.INFINITY, 0.0, GRB.CONTINUOUS, "exprvar"); // Variable
+																									// expression
+		GRBVar absexpr = model.addVar(0.0, GRB.INFINITY, 1.0, GRB.CONTINUOUS, "absexpr"); // Variable absolute
+																							// expression
 		model.addConstr(exprvar, GRB.EQUAL, expr, "expr constraint"); // Variable == expression
 		model.addGenConstrAbs(absexpr, exprvar, "abs_const"); // Absolute Variable == abs(Variable)
 		GRBLinExpr expr_fin = new GRBLinExpr(); // Final expression
 		expr_fin.addTerm(1, absexpr); // Absolute Variable *1
 		model.setObjective(expr_fin, GRB.MINIMIZE); // Minimize final expression
-		
-		// optimize 
-		model.optimize(); 
+
+		// optimize
+		model.optimize();
 		numberOfLPsSolvedUsingGurobi++;
-		System.out.println(numberOfLPsSolvedUsingGurobi);
+		// System.out.println(numberOfLPsSolvedUsingGurobi);
 
 		double[] result = new double[no_items];
 
 		if (model.get(GRB.IntAttr.Status) == GRB.Status.OPTIMAL) {
-			System.out.println("Objective function value: " + model.get(GRB.DoubleAttr.ObjVal));
-			for (int i = 0; i < x.length; i++) {
-				System.out.print(x[i].get(GRB.StringAttr.VarName) + " = " + x[i].get(GRB.DoubleAttr.X) + ", ");
-			}
-			System.out.println("");
+			// System.out.println("Objective function value: " +
+			// model.get(GRB.DoubleAttr.ObjVal));
+//			for (int i = 0; i < x.length; i++) {
+//				System.out.print(x[i].get(GRB.StringAttr.VarName) + " = " + x[i].get(GRB.DoubleAttr.X) + ", ");
+//			}
+//			System.out.println("");
 
 			for (int i = 0; i < no_items; i++) {
 				// System.out.println("i= "+i+" "+x[i].get(GRB.DoubleAttr.X)+ "
 				// "+model.get(GRB.DoubleParam.IntFeasTol));
 				if (x[i].get(GRB.DoubleAttr.X) > model.get(GRB.DoubleParam.IntFeasTol)
-						&& x[i].get(GRB.DoubleAttr.X) < 1 - model.get(GRB.DoubleParam.IntFeasTol))
+						&& x[i].get(GRB.DoubleAttr.X) < 1 - model.get(GRB.DoubleParam.IntFeasTol)) {
+					double[] solution0;
+					double[] solution1;
+					if (numberOfLPsSolvedUsingGurobi <= 1) {
+						fixedTo0[i] = true;
+						solution0 = branchAndBound(fixedTo0, fixedTo1); // Get solution for fixed to zero
+						fixedTo0[i] = false; // Un-fix it from zero
+						return solution0;
+					} else {
+						fixedTo0[i] = true;
+						solution0 = branchAndBound(fixedTo0, fixedTo1);
+						fixedTo0[i] = false;
 
-				{
-					fixedTo0[i] = true;
-
-					double[] solution0 = branchAndBound(fixedTo0, fixedTo1);
-					fixedTo0[i] = false;
-
-					fixedTo1[i] = true;
-					double[] solution1 = branchAndBound(fixedTo0, fixedTo1);
-					fixedTo1[i] = false;
-
-					if (solution0 == null) {
-						model.dispose();
-						return solution1;
-					} else if (solution1 == null) {
+						fixedTo1[i] = true;
+						solution1 = branchAndBound(fixedTo0, fixedTo1);
+						fixedTo1[i] = false;
+					}
+					double ov0 = valueFunction(solution0);
+					double ov1 = valueFunction(solution1);
+					if (Math.abs(ov0) < Math.abs(ov1)) // compare solutions, return better one
+					{
 						model.dispose();
 						return solution0;
 					} else {
-						double ov0 = valueFunction(solution0);
-						double ov1 = valueFunction(solution1);
-						if (Math.abs(ov0) < Math.abs(ov1)) {
-							model.dispose();
-							return solution0;
-						} else {
-							model.dispose();
-							return solution1;
-						}
+						model.dispose();
+						return solution1;
 					}
 				}
 			}
@@ -151,11 +151,10 @@ public class AufteilungsAlgorithmus {
 		return Math.abs(sum2 - sum1);
 	}
 
-
 	public static void main(String[] args) throws GRBException {
-		int no_items = 6;
+		int no_items = 23;
 		Beute beute = new Beute(no_items);
-		ArrayList<Item> items = beute.getBeute();		
+		ArrayList<Item> items = beute.getBeute();
 
 		beute.sortItemsByWert();
 
@@ -166,11 +165,16 @@ public class AufteilungsAlgorithmus {
 		AufteilungsAlgorithmus auft = new AufteilungsAlgorithmus(beute);
 		double startbound = auft.startHeuristic(items);
 
-		auft.modelSetup();
 
-		System.out.println("startbound  : "+startbound);
 
+		System.out.println("startbound  : " + startbound);
+		long startTime = System.nanoTime();
 		double[] solution = auft.branchAndBound(new boolean[no_items], new boolean[no_items]);
+		long endTime = System.nanoTime();
+		long elapsedTime = endTime - startTime;
+		double elapsedTimeInSecs = elapsedTime / 1_000_000_000.0;
+		System.out.println(numberOfLPsSolvedUsingGurobi);
+		System.out.println(elapsedTimeInSecs);
 
 		System.out.println(solution);
 

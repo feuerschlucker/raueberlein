@@ -23,7 +23,6 @@ def create_itemlist_lognormal(no_items: int, name: str) -> pd.DataFrame:
 def create_itemlist_normal(no_items: int, name: str) -> pd.DataFrame:
     df = pd.DataFrame({"name": ["NORMAL"+str(i) for i in range(no_items)]})
     df["wert"] = np.random.random(size=no_items)
-
     # plot(df, "Normal Distribution", name, no_items)
     return df
 
@@ -41,6 +40,13 @@ def plot(df: pd.DataFrame, title: str, name: str, no_items: int) -> None:
     return df
 
 
+def read_csv_instance(name):
+
+    df = pd.read_csv(f"Data/{name}")
+    print(df)
+    return df
+
+
 def save_as_csv(df: pd.DataFrame, name: str) -> None:
     df.to_csv(f"Data/{name}", index=False)
 
@@ -48,7 +54,7 @@ def save_as_csv(df: pd.DataFrame, name: str) -> None:
 def main():
 
     no_items = [8, 10, 12, 14, 16, 18, 20, 21, 22, 23, 24, 25, 2000]
-    no_items = [8, 10]
+
     for i in range(len(no_items)):
 
         name = f"beta_dist_{no_items[i]}"
