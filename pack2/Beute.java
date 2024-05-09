@@ -22,18 +22,21 @@ public class Beute {
 		this.createBeute();
 	}
 	
-	public Beute (String delimeter, String filepath) 
+	public Beute (String delimeter, Boolean header, String filepath) 
 	{
 		items = new ArrayList<Item>();
 		this.delimeter = delimeter;
-		readCSV(filepath);
+		readCSV(filepath,header);
 		no_items = items.size();
 	}
  // Read from the CSV-File
-	private void readCSV(String filepath) {
+	private void readCSV(String filepath, Boolean header) {
 		// UNTERDRÜCKEN HEADER!!!!!!
 		List<List<String>> records = new ArrayList<>();
 		try (Scanner scanner = new Scanner(new File(filepath))) {
+			if (scanner.hasNextLine() && header) {
+				scanner.nextLine();
+			}
 		    while (scanner.hasNextLine()) {
 		        records.add(getRecordFromLine(scanner.nextLine()));
 		    }
@@ -58,13 +61,13 @@ public class Beute {
 	}
 	
 	// Write to CSV-File
-	private void writeCSV(File csvFile) {
+	private void writeCSV(File csvFile, Boolean header) {
 		try {
 	        // Create a FileWriter object for the CSV file. 
 	        FileWriter csvWriter = new FileWriter(csvFile); 
 	        
-	        // Write a header row. 
-	        if(true){
+	        // If true, write a header row. 
+	        if(header){
 	        	csvWriter.write("Name"+delimeter+"Wert");
 	        	csvWriter.write(NEW_LINE_SEPARATOR);
 	        }
@@ -81,28 +84,7 @@ public class Beute {
     		e.printStackTrace();
 		}
 	}
-		
-		
-		
-		
-	private void writeCSV2(File csvFile) {
-	    this.delimeter = ",";  
-		FileWriter csvWriter = null;  
-		try {
-			csvWriter = new FileWriter(csvFile);
-			
-            for (Item i : this.items) { 
-                csvWriter.append(i.getBezeichnung()); 
-                csvWriter.append(delimeter); 
-                csvWriter.append(String.valueOf(i.getWert())); 
-                csvWriter.append(NEW_LINE_SEPARATOR); 
-            } 
-    	} catch (IOException e) { 
-    		System.out.println("Error in CsvFileWriter !"); 
-    		e.printStackTrace();
-    	}
-	}
-	
+	// Give List of Beute
 	public ArrayList<Item> getBeute() {
 		return this.items;
 	}
@@ -117,10 +99,10 @@ public class Beute {
 	}
 	
 	// Beute als CSV speichern
-	public void saveBeute(String filename) {
+	public void saveBeute(String filename, Boolean header) {
 		this.delimeter = ",";
 		File csvFile = new File(filename+".csv");
-		writeCSV(csvFile);
+		writeCSV(csvFile, header);
 	}
 
     public void sortItemsByWert() {
@@ -151,14 +133,15 @@ public class Beute {
     }
     
     public static void main(String[] args) {
-    	Beute b1 = new Beute (",","C:\\Users\\tasug\\Documents\\Leoben\\Operations Research\\RaeuberInnenProject\\TestItems.csv");
+    	Beute b1 = new Beute (",",false,"C:\\Users\\tasug\\Documents\\Leoben\\Operations Research\\RaeuberInnenProject\\TestItems.csv");
+    	System.out.println(b1.no_items);
     	Beute b2 = new Beute(20);
     	System.out.println(b2);
     	for (Item i:b2.getBeute()) {
     		System.out.println(i);
     	}
-    	b2.saveBeute("BeuteSpeicherung");
-    	Beute b3 = new Beute (",","C:\\Users\\tasug\\eclipse-workspace\\raueberlein\\BeuteSpeicherung.csv");
+    	b2.saveBeute("BeuteSpeicherung",true);
+    	Beute b3 = new Beute (",",true,"C:\\Users\\tasug\\eclipse-workspace\\raueberlein\\BeuteSpeicherung.csv");
     	for (Item i:b3.getBeute()) {
     	    System.out.println(i);
     	}

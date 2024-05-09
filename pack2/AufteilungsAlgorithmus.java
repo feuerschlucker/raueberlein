@@ -9,7 +9,7 @@ import com.gurobi.gurobi.GRBLinExpr;
 import com.gurobi.gurobi.GRBModel;
 import com.gurobi.gurobi.GRBVar;
 
-public class Aufteilen2 {
+public class AufteilungsAlgorithmus {
 
 	
 	private GRBEnv env; // Gurobi Environment
@@ -19,7 +19,7 @@ public class Aufteilen2 {
 	private static int numberOfLPsSolvedUsingGurobi; // LP Counter
 	private double startbound; //
 
-	public Aufteilen2(Beute beute) throws GRBException {
+	public AufteilungsAlgorithmus(Beute beute) throws GRBException {
 		ArrayList<Item> items = beute.getBeute();
 		this.items = items; // Item-List
 		this.no_items = items.size(); // List size
@@ -27,17 +27,17 @@ public class Aufteilen2 {
 		for (int i = 0; i < no_items; i++) {
 			werte[i] = items.get(i).getWert(); //Item values
 		}
+		//this.startbound = startHeuristic(items);
 	}
-
-	public void modelSetup(double startbound) throws GRBException {
-		this.startbound = startbound;
+	
+	// set up Model
+	public void modelSetup() throws GRBException {
 		this.env = new GRBEnv(true); // New Gurobi enviroment
 		env.set("logFile", "LP.log");
 		env.set("OutputFlag", "0");
 		env.start();
 		// int N = 21;
 	}
-	// set up Model
 
 	private double[] branchAndBound(boolean[] fixedTo0, boolean[] fixedTo1) throws GRBException {
 		GRBModel model = new GRBModel(env);
@@ -163,14 +163,10 @@ public class Aufteilen2 {
 			System.out.println(item.getWert() + "   " + item.getBezeichnung());
 		}
 
-		Aufteilen2 auft = new Aufteilen2(beute);
+		AufteilungsAlgorithmus auft = new AufteilungsAlgorithmus(beute);
 		double startbound = auft.startHeuristic(items);
 
-		
-		
-		
-		
-		auft.modelSetup(startbound);
+		auft.modelSetup();
 
 		System.out.println("startbound  : "+startbound);
 
