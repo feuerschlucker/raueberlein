@@ -12,7 +12,7 @@ public class Beute {
 	private String delimiter = ","; 
 	private String filename;
 	 
-
+	// Random Beute 
 	public Beute(int no_items) {
 		items = new ArrayList<Item>();
 		this.no_items = no_items;
@@ -20,6 +20,7 @@ public class Beute {
 		this.createBeute();
 	}
 	
+	// Beute from csv File
 	public Beute (String filename, String delimiter, Boolean header,  String filepath) 
 	{
 		items = new ArrayList<Item>();
@@ -32,40 +33,57 @@ public class Beute {
         }
 		readCSV(filepath+this.filename+".csv",header);
 		no_items = items.size();
-		
-	}
- // Read from the CSV-File
-	private void readCSV1(String filepath, Boolean header) {
-
-		List<List<String>> records = new ArrayList<>();
-		try (Scanner scanner = new Scanner(new File(filepath))) {
-			// Suppress header
-			if (scanner.hasNextLine() && header) {
-				scanner.nextLine();
-			}
-		    while (scanner.hasNextLine()) {
-		        records.add(getRecordFromLine1(scanner.nextLine()));
-		    }
-		} catch (IOException e) {
-			System.out.println("Error in CsvFileReader!"); 
-    		e.printStackTrace();			
-		}
-		for(List<String> list: records) {
-			items.add(new Item (list.get(0),Double.parseDouble(list.get(1))));
-		}
-	}
- // Read one line of CSV-File
-	private List<String> getRecordFromLine1(String line) {
-	    List<String> values = new ArrayList<String>();
-	    try (Scanner rowScanner = new Scanner(line)) {
-	        rowScanner.useDelimiter(this.delimiter);
-	        while (rowScanner.hasNext()) {
-	            values.add(rowScanner.next());
-	        }
-	    }
-	    return values;
 	}
 	
+	// Create Random Beute
+	public void createBeute() {
+		for (int i = 0; i < this.no_items; i++) {
+			String bezeichnung = "AA" + i;
+			Double wert = rnd.nextDouble() * 1000;
+			Item item = new Item(bezeichnung, wert);
+			items.add(item);
+		}
+	}
+	
+	// Give List of Beute
+	public ArrayList<Item> getBeute() {
+		return this.items;
+	}
+	
+
+    // Get Filename of Beute
+    public String getFilename() {
+    	return this.filename;
+    }
+    
+    // Get numbers of Items of Beute
+    public int getBeuteSize() {
+    	return this.no_items;
+    }
+    
+    // Get Sum of beute Items
+    public double getBeuteValue() {
+    	double gesamtWert = 0;
+    	for (Item i: this.items) {
+    		gesamtWert += i.getWert();
+    	}
+    	return gesamtWert;
+    }
+	
+	// Save Beute as CSV-File
+	public void saveBeute(String filename, Boolean header) {
+		this.filename = filename;
+		this.delimiter = ",";
+		File csvFile = new File(this.filename+".csv");
+		writeCSV(csvFile, header);
+	}
+	
+	// Set Delimeter for reading and writing Beute
+    public void setDelimeter(String delimiter) {
+    	this.delimiter = delimiter;
+    }
+	
+	// Read from the CSV-File
     public void readCSV(String filepath, boolean header) {
         try (BufferedReader br = new BufferedReader(new FileReader(filepath))) {
         	// Suppress header
@@ -84,7 +102,8 @@ public class Beute {
             e.printStackTrace();
         }
     }
-
+    
+    // Read one line of CSV-File
     private List<String> getRecordFromLine(String line) {
         List<String> values = new ArrayList<>();
         try (Scanner rowScanner = new Scanner(line)) {
@@ -96,7 +115,6 @@ public class Beute {
         return values;
     }
 	
-		
 	// Write to CSV-File
 	private void writeCSV(File csvFile, Boolean header) {
 		try {
@@ -122,28 +140,6 @@ public class Beute {
 		}
 	}
 	
-	// Give List of Beute
-	public ArrayList<Item> getBeute() {
-		return this.items;
-	}
-
-	public void createBeute() {
-		for (int i = 0; i < this.no_items; i++) {
-			String bezeichnung = "AA" + i;
-			Double wert = rnd.nextDouble() * 1000;
-			Item item = new Item(bezeichnung, wert);
-			items.add(item);
-		}
-	}
-	
-	// Save Beute as CSV-File
-	public void saveBeute(String filename, Boolean header) {
-		this.filename = filename;
-		this.delimiter = ",";
-		File csvFile = new File(this.filename+".csv");
-		writeCSV(csvFile, header);
-	}
-
     public void sortItemsByWert() {
         Collections.sort(items, new Comparator<Item>() {
             @Override
@@ -154,48 +150,9 @@ public class Beute {
         });
     }
     
-    // Set Delimeter for reading and writing Beute
-    public void setDelimeter(String delimiter) {
-    	this.delimiter = delimiter;
-    }
-    
-    // Get Filename of Beute
-    public String getFilename() {
-    	return this.filename;
-    }
-    
     @Override
     public String toString() {
 		return "Beute("+this.no_items+"): Gesamtwert = "+getBeuteValue();
     }
-    
-    public int getBeuteSize() {
-    	return this.no_items;
-    }
-    
-    // Get Sum of beute Items
-    public double getBeuteValue() {
-    	double gesamtWert = 0;
-    	for (Item i: this.items) {
-    		gesamtWert += i.getWert();
-    	}
-    	return gesamtWert;
-    }
-    
-    public static void main(String[] args) {
-    	Beute b1 = new Beute ("TestItems.csv",",",false,"C:\\Users\\tasug\\Documents\\Leoben\\Operations Research\\RaeuberInnenProject\\");
-    	System.out.println(b1.no_items);
-    	Beute b2 = new Beute(10);
-    	System.out.println(b2);
-    	for (Item i:b2.getBeute()) {
-    		System.out.println(i);
-    	}
-    	b2.saveBeute("BeuteSpeicherung",true);
-    	Beute b3 = new Beute ("BeuteSpeicherung.csv",",",true,"");
-    	for (Item i:b3.getBeute()) {
-    	    System.out.println(i);
-    	}
-    }
-    
-	
+   	
 }

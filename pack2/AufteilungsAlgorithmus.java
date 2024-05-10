@@ -18,6 +18,7 @@ public class AufteilungsAlgorithmus {
 	public static int numberOfLPsSolvedUsingGurobi; // LP Counter
 	private double startbound; //
 
+	// Create new Algorithm with given Beute
 	public AufteilungsAlgorithmus(Beute beute) throws GRBException {
 		ArrayList<Item> items = beute.getBeute();
 		this.items = items; // Item-List
@@ -29,6 +30,7 @@ public class AufteilungsAlgorithmus {
 		//this.startbound = startHeuristic(items);
 	}
 	
+	// solve Problem of saved Beute
 	public double[] solve() throws GRBException {
 		modelSetup();
 		double[] solution = branchAndBound(new boolean[no_items], new boolean[no_items]);
@@ -44,6 +46,7 @@ public class AufteilungsAlgorithmus {
 		// int N = 21;
 	}
 
+	// Branch and Bound algorithm 
 	private double[] branchAndBound(boolean[] fixedTo0, boolean[] fixedTo1) throws GRBException {
 		GRBModel model = new GRBModel(env);
 		GRBVar[] x = new GRBVar[no_items]; // Array Gurobi variables weights
@@ -132,9 +135,9 @@ public class AufteilungsAlgorithmus {
 		}
 		model.dispose();
 		return result;
-
 	}
 
+	// Get ValueFunction of Solution
 	public double valueFunction(double[] aufteilung) {
 		double vf = 0;
 		for (int i = 0; i < no_items; i++) {
@@ -143,6 +146,7 @@ public class AufteilungsAlgorithmus {
 		return vf;
 	}
 	
+	// Get Sum of Value what both Raubers get
 	public double[] getRauberWert(double[] aufteilung){
 		double[] summen = new double[2];
 		int s = 0;
@@ -162,6 +166,7 @@ public class AufteilungsAlgorithmus {
 		
 	}
 
+	// simple Startheuristic
 	public double startHeuristic(ArrayList<Item> items) {
 		double sum1 = 0.0;
 		double sum2 = 0.0;
@@ -210,7 +215,6 @@ public class AufteilungsAlgorithmus {
 			}
 		}
 
-		// System.out.print(auft.valueFunction(aufteilung));
 
 	}
 
