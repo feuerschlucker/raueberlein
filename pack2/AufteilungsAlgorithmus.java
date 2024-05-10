@@ -15,7 +15,7 @@ public class AufteilungsAlgorithmus {
 	private int no_items; // Number of items
 	private double[] werte; // Array of item values
 	private ArrayList<Item> items = new ArrayList<>(); // Item-List
-	private static int numberOfLPsSolvedUsingGurobi; // LP Counter
+	public static int numberOfLPsSolvedUsingGurobi; // LP Counter
 	private double startbound; //
 
 	public AufteilungsAlgorithmus(Beute beute) throws GRBException {
@@ -27,6 +27,12 @@ public class AufteilungsAlgorithmus {
 			werte[i] = items.get(i).getWert(); // Item values
 		}
 		//this.startbound = startHeuristic(items);
+	}
+	
+	public double[] solve() throws GRBException {
+		modelSetup();
+		double[] solution = branchAndBound(new boolean[no_items], new boolean[no_items]);
+		return solution;
 	}
 	
 	// set up Model
@@ -136,6 +142,25 @@ public class AufteilungsAlgorithmus {
 		}
 		return vf;
 	}
+	
+	public double[] getRauberWert(double[] aufteilung){
+		double[] summen = new double[2];
+		int s = 0;
+		double sum0 = 0;
+		double sum1 = 0;
+		for(Item i: items) {
+			if(aufteilung[s]==0) {
+				sum0+=i.getWert();
+			} else {
+				sum1+=i.getWert();
+			}
+			s++;
+		}
+		summen[0] = sum0;
+		summen[1] = sum1;
+		return summen;
+		
+	}
 
 	public double startHeuristic(ArrayList<Item> items) {
 		double sum1 = 0.0;
@@ -152,12 +177,11 @@ public class AufteilungsAlgorithmus {
 	}
 
 	public static void main(String[] args) throws GRBException {
-		int no_items = 23;
+		int no_items = 10;
 		Beute beute = new Beute(no_items);
 		ArrayList<Item> items = beute.getBeute();
 
 		beute.sortItemsByWert();
-
 		for (Item item : items) {
 			System.out.println(item.getWert() + "   " + item.getBezeichnung());
 		}
@@ -165,11 +189,9 @@ public class AufteilungsAlgorithmus {
 		AufteilungsAlgorithmus auft = new AufteilungsAlgorithmus(beute);
 		double startbound = auft.startHeuristic(items);
 
-
-
 		System.out.println("startbound  : " + startbound);
 		long startTime = System.nanoTime();
-		double[] solution = auft.branchAndBound(new boolean[no_items], new boolean[no_items]);
+		double [] solution = auft.solve();
 		long endTime = System.nanoTime();
 		long elapsedTime = endTime - startTime;
 		double elapsedTimeInSecs = elapsedTime / 1_000_000_000.0;
