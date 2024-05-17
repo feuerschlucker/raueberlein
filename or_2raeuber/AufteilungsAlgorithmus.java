@@ -33,7 +33,7 @@ public class AufteilungsAlgorithmus {
 	public double[] solve() throws GRBException {
 		modelSetup();
 		double[] solution = branchAndBound(new boolean[no_items], new boolean[no_items]);
-		System.out.println(numberOfLPsSolvedUsingGurobi);
+		System.out.println("Solved LPs: "+ String.valueOf(numberOfLPsSolvedUsingGurobi));
 		return solution;
 	}
 	

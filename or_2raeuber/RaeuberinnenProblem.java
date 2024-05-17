@@ -28,6 +28,7 @@ public class RaeuberinnenProblem {
 			long endTime = System.nanoTime();
 			long elapsedTime = endTime - startTime;
 			double elapsedTimeInSecs = elapsedTime / 1_000_000_000.0;
+			System.out.println("Time needed: "+String.valueOf(elapsedTimeInSecs)+" s");
 			saveSolution(beute,auft,solution);
 			saveStats(beute,auft,solution,elapsedTimeInSecs);
 		} catch (GRBException e) {
@@ -109,7 +110,7 @@ public class RaeuberinnenProblem {
 	
 	 public static void main(String[] args) {
 		// Random Beute Aufteilung
-		RaeuberinnenProblem.randomBeute(16);
+		RaeuberinnenProblem.randomBeute(10);
 		
 		// Given csv File Beute Aufteilung
 		RaeuberinnenProblem.csvBeute("normal_dist_16.csv",",",true,"src_python\\Data\\");
