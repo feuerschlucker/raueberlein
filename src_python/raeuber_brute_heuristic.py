@@ -106,7 +106,7 @@ def main():
     for iteration in range(iterations):
         name = f"lognormal_dist_realisation {iteration+1}"
         timestart = time.time()
-        no_items = 30
+        no_items = 20000
         orig_no_items = no_items
         items = instances.create_itemlist_lognormal(no_items, name)
 
@@ -118,6 +118,7 @@ def main():
         # items.loc[0, "wert"] = 3000  # test Mona Lisa
         # items = pd.read_csv('Data/banksy.csv')  # Test Banksy
         # name = "xxx"
+
         if is_MonaLisa_distributed(items):
             name = name + "_solution"
             items = MonaLisa_solution(items)
@@ -129,20 +130,14 @@ def main():
                 instances.save_as_csv(items, name)
 
         if len(items) >= 26:
-
             items = items.sort_values(
                 by=["wert"], ascending=False, ignore_index=True)
-
             items_heuristik = items[0:len(items)-20]
             items = (items[len(items)-20:])
             items = items.reset_index(drop=True)
-            print("xxxxxxxxxxx")
-            print(items)
             heuristic_solution = start_heuristic(
                 items_heuristik)
-            print(heuristic_solution)
             offset = compute_offset(heuristic_solution)
-            print(offset)
             no_items = 20
 
         best_solution = []
