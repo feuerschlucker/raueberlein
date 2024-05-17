@@ -78,18 +78,19 @@ public class AufteilungsAlgorithmus {
 
 		// optimize
 		model.optimize();
-		numberOfLPsSolvedUsingGurobi++;
-		//System.out.println(numberOfLPsSolvedUsingGurobi);
-		
+		numberOfLPsSolvedUsingGurobi++;		
 
 		double[] result = new double[no_items];
 
+		// Check if Gurobi found a solution
 		if (model.get(GRB.IntAttr.Status) == GRB.Status.OPTIMAL) {
+			// check the solution for each item
 			for (int i = 0; i < no_items; i++) {
 				if (x[i].get(GRB.DoubleAttr.X) > model.get(GRB.DoubleParam.IntFeasTol)
 						&& x[i].get(GRB.DoubleAttr.X) < 1 - model.get(GRB.DoubleParam.IntFeasTol)) {
 					double[] solution0;
 					double[] solution1;
+					// Fix first Variable only too zero (half tree)	
 					if (numberOfLPsSolvedUsingGurobi <= 1) {
 						fixedTo0[i] = true;
 						solution0 = branchAndBound(fixedTo0, fixedTo1); // Get solution for fixed to zero
@@ -104,6 +105,7 @@ public class AufteilungsAlgorithmus {
 						solution1 = branchAndBound(fixedTo0, fixedTo1);
 						fixedTo1[i] = false;
 					}
+					// Get valueFunction for both Solutions
 					double ov0 = valueFunction(solution0);
 					double ov1 = valueFunction(solution1);
 					if (Math.abs(ov0) < Math.abs(ov1)) // compare solutions, return better one
@@ -137,6 +139,7 @@ public class AufteilungsAlgorithmus {
 		return vf;
 	}
 	
+	// Get Number of Solved Gurobi LPs
 	public int getNumbSolvedGurobi() {
 		return numberOfLPsSolvedUsingGurobi;
 	}
@@ -174,43 +177,6 @@ public class AufteilungsAlgorithmus {
 		}
 
 		return Math.abs(sum2 - sum1);
-	}
-
-	public static void main(String[] args) throws GRBException {
-		int no_items = 10;
-		Beute beute = new Beute(no_items);
-		ArrayList<Item> items = beute.getBeute();
-
-		beute.sortItemsByWert();
-		for (Item item : items) {
-			System.out.println(item.getWert() + "   " + item.getBezeichnung());
-		}
-
-		AufteilungsAlgorithmus auft = new AufteilungsAlgorithmus(beute);
-		double startbound = auft.startHeuristic(items);
-
-		System.out.println("startbound  : " + startbound);
-		long startTime = System.nanoTime();
-		double [] solution = auft.solve();
-		long endTime = System.nanoTime();
-		long elapsedTime = endTime - startTime;
-		double elapsedTimeInSecs = elapsedTime / 1_000_000_000.0;
-		System.out.println(numberOfLPsSolvedUsingGurobi);
-		System.out.println(elapsedTimeInSecs);
-
-		System.out.println(solution);
-
-		System.out.println("optimum solution (Differenz = " + auft.valueFunction((solution)) + "):");
-		for (int i = 0; i < no_items; i++) {
-			System.out.println(solution[i]);
-			if (solution[i] == 0) {
-				System.out.println("\t" + items.get(i).getBezeichnung() + "  Raeuber 1");
-			} else {
-				System.out.println("\t" + items.get(i).getBezeichnung() + "Raeuber 2");
-			}
-		}
-
-
 	}
 
 }

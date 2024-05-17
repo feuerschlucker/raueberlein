@@ -36,7 +36,7 @@ public class RaeuberinnenProblem {
 		}
 	}
 	
-	// Save Statistics of given Probelm / Beute
+	// Save Statistics of given Problem / Beute
 	private static void saveStats(Beute b, AufteilungsAlgorithmus a, double[] sol, double time) {
 		try {
 			File csvFile = new File(b.getFilename()+"_Stats"+".csv");
@@ -109,9 +109,8 @@ public class RaeuberinnenProblem {
 	
 	 public static void main(String[] args) {
 		// Random Beute Aufteilung
-		//RaeuberinnenProblem.randomBeute(16);
+		RaeuberinnenProblem.randomBeute(16);
 		
-				
 		// Given csv File Beute Aufteilung
 		RaeuberinnenProblem.csvBeute("normal_dist_16.csv",",",true,"src_python\\Data\\");
 	}
